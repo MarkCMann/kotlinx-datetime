@@ -3,6 +3,7 @@ pluginManagement {
         maven(url = "https://maven.pkg.jetbrains.space/kotlin/p/kotlinx/maven")
         mavenCentral()
         gradlePluginPortal()
+        maven(url = "https://maven.pkg.jetbrains.space/kotlin/p/kotlin/bootstrap")
     }
     val kotlinVersion: String by settings
     val dokkaVersion: String by settings

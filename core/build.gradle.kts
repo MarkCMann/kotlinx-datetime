@@ -90,6 +90,16 @@ kotlin {
 //        }
     }
 
+    wasm {
+        nodejs {
+            testTask {
+                useMocha {
+                    timeout = "30s"
+                }
+            }
+        }
+    }
+
     sourceSets.all {
         val suffixIndex = name.indexOfLast { it.isUpperCase() }
         val targetName = name.substring(0, suffixIndex)
@@ -177,18 +187,39 @@ kotlin {
             }
         }
 
-        val jsMain by getting {
+        val jsWasmMain by creating {
             dependencies {
-                api("org.jetbrains.kotlin:kotlin-stdlib-js")
                 api("org.jetbrains.kotlinx:kotlinx-serialization-core:$serializationVersion")
                 implementation(npm("@js-joda/core", "3.2.0"))
             }
         }
 
-        val jsTest by getting {
+        val jsWasmTest by creating {
             dependencies {
                 implementation(npm("@js-joda/timezone", "2.3.0"))
             }
+        }
+
+        val jsMain by getting {
+            dependsOn(jsWasmMain)
+            dependencies {
+                api("org.jetbrains.kotlin:kotlin-stdlib-js")
+            }
+        }
+
+        val jsTest by getting {
+            dependsOn(jsWasmTest)
+        }
+
+        val wasmMain by getting {
+            dependsOn(jsWasmMain)
+            dependencies {
+                api("org.jetbrains.kotlin:kotlin-stdlib-wasm")
+            }
+        }
+
+        val wasmTest by getting {
+            dependsOn(jsWasmTest)
         }
 
         val nativeMain by getting {
@@ -357,5 +388,11 @@ tasks.withType<AbstractDokkaLeafTask>().configureEach {
             matchingRegex.set(".*\\.internal\\..*")
             suppress.set(true)
         }
+    }
+}
+
+tasks.whenTaskAdded {
+    if (name == "compileJsWasmMainKotlinMetadata") {
+        this.enabled = false
     }
 }

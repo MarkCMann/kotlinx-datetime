@@ -50,6 +50,11 @@ kotlin {
         }
     }
 
+    wasm {
+        nodejs {
+        }
+    }
+
     sourceSets.all {
         val suffixIndex = name.indexOfLast { it.isUpperCase() }
         val targetName = name.substring(0, suffixIndex)
@@ -91,6 +96,13 @@ kotlin {
 
         val jsMain by getting
         val jsTest by getting {
+            dependencies {
+                implementation(npm("@js-joda/timezone", "2.3.0"))
+            }
+        }
+
+        val wasmMain by getting
+        val wasmTest by getting {
             dependencies {
                 implementation(npm("@js-joda/timezone", "2.3.0"))
             }
