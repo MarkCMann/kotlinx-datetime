@@ -6,6 +6,7 @@ import javax.xml.parsers.DocumentBuilderFactory
 import java.io.ByteArrayOutputStream
 import java.io.PrintWriter
 import org.jetbrains.dokka.gradle.AbstractDokkaLeafTask
+import java.net.URI
 
 plugins {
     kotlin("multiplatform")
@@ -394,5 +395,21 @@ tasks.withType<AbstractDokkaLeafTask>().configureEach {
 tasks.whenTaskAdded {
     if (name == "compileJsWasmMainKotlinMetadata") {
         this.enabled = false
+    }
+}
+
+fun Project.getSensitiveProperty(name: String): String? {
+    return project.findProperty(name) as? String ?: System.getenv(name)
+}
+
+publishing {
+    repositories {
+        maven {
+            url = URI("https://maven.pkg.jetbrains.space/kotlin/p/wasm/experimental")
+            credentials {
+                username = project.getSensitiveProperty("kotlin.space.packages.wasm.user")
+                password = project.getSensitiveProperty("kotlin.space.packages.wasm.secret")
+            }
+        }
     }
 }
