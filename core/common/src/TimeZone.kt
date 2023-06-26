@@ -94,8 +94,7 @@ public expect open class TimeZone {
  * A time zone that is known to always have the same offset from UTC.
  */
 @Serializable(with = FixedOffsetTimeZoneSerializer::class)
-public expect class FixedOffsetTimeZone : TimeZone {
-    public constructor(offset: UtcOffset)
+public expect class FixedOffsetTimeZone public constructor(offset: UtcOffset) : TimeZone {
 
     /**
      * The constant offset from UTC that this time zone has.
